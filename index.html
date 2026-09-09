@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Bank Exam Quiz</title>
+
+<style>
+
+body{
+    font-family: Arial, sans-serif;
+    background:#f4f6f9;
+    margin:0;
+    padding:20px;
+}
+
+.container{
+    max-width:1000px;
+    margin:auto;
+}
+
+h1{
+    text-align:center;
+}
+
+/* ========================= */
+/* TIMER AREA */
+/* ========================= */
+
+#timer-container{
+    position:sticky;
+    top:0;
+    z-index:100;
+    background:#f4f6f9;
+    padding-bottom:10px;
+}
+
+#timer{
+    background:#222;
+    color:white;
+    padding:15px;
+    text-align:center;
+    font-size:22px;
+    border-radius:10px;
+    margin-bottom:10px;
+}
+
+.timer-buttons{
+    text-align:center;
+}
+
+#pauseBtn,
+#resumeBtn{
+    padding:10px 20px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:16px;
+    margin:5px;
+}
+
+#pauseBtn{
+    background:#ff9800;
+    color:white;
+}
+
+#resumeBtn{
+    background:#28a745;
+    color:white;
+}
+
+.question{
+    background:white;
+    padding:20px;
+    margin-bottom:20px;
+    border-radius:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+}
+
+.question h3{
+    margin-bottom:15px;
+}
+
+.option{
+    display:block;
+    padding:12px;
+    margin:10px 0;
+    border:1px solid #ccc;
+    border-radius:8px;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.option:hover{
+    background:#f0f0f0;
+}
+
+.selected{
+    background:#cfe2ff;
+    border:2px solid #0d6efd;
+}
+
+.mark-btn{
+    margin-top:10px;
+    padding:8px 15px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    background:#ff9800;
+    color:white;
+}
+
+.marked{
+    background:#ffcc80 !important;
+}
+
+.review-marked{
+    background:#e0e0e0 !important;
+    border:2px solid #9e9e9e;
+}
+
+.clear-btn{
+    margin-top:10px;
+    margin-left:10px;
+    padding:8px 15px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    background:#dc3545;
+    color:white;
+}
+
+.submit-btn{
+    width:100%;
+    padding:15px;
+    font-size:20px;
+    border:none;
+    border-radius:10px;
+    background:#28a745;
+    color:white;
+    cursor:pointer;
+    margin-top:20px;
+}
+
+.result-box{
+    background:white;
+    padding:30px;
+    border-radius:12px;
+    text-align:center;
+    box-shadow:0 2px 10px rgba(0,0,0,0.1);
+}
+
+.review-btn{
+    padding:12px 20px;
+    margin-top:20px;
+    border:none;
+    border-radius:10px;
+    background:#007bff;
+    color:white;
+    font-size:18px;
+    cursor:pointer;
+}
+
+.review-question{
+    background:white;
+    padding:20px;
+    margin:20px 0;
+    border-radius:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+}
+
+.correct{
+    color:green;
+    font-weight:bold;
+}
+
+.wrong{
+    color:red;
+    font-weight:bold;
+}
+
+.unanswered{
+    color:orange;
+    font-weight:bold;
+}
+
+.correct-answer{
+    background:#d4edda;
+    padding:10px;
+    border-radius:8px;
+    margin-top:10px;
+}
+
+.disabled-option{
+    pointer-events:none;
+    opacity:0.6;
+}
+
+.disabled-btn{
+    opacity:0.6;
+    cursor:not-allowed;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Bank Exam MCQ Quiz</h1>
+
+<!-- ========================= -->
+<!-- TIMER -->
+<!-- ========================= -->
+
+<div id="timer-container">
+
+    <div id="timer">
+        Time Left: 20:00
+    </div>
+
+    <div class="timer-buttons">
+
+        <button id="pauseBtn" onclick="pauseTimer()">
+            Pause
+        </button>
+
+        <button id="resumeBtn" onclick="resumeTimer()" disabled>
+            Resume
+        </button>
+
+    </div>
+
+</div>
+
+<div id="quiz"></div>
+
+<button class="submit-btn" onclick="submitQuiz()">
+Submit Quiz
+</button>
+
+</div>
+
+<script>
+
+// ===============================
+// QUESTIONS AREA
+// ===============================
+
+const questions = [
+
+{q:"Belgian Prime Minister Bart De Wever visited India from 2–4 September 2026 for his first official visit after becoming Prime Minister in February 2025. The visit focused on Trade, Investment, Defence, Technology, Connectivity, Clean Energy and Critical Minerals. What was the key framework around which the 10 major announcements were mainly structured?", options:["3Ts – Trade, Technology & Talent","3Cs – Commerce, Connectivity & Cooperation","4Ts – Trade, Technology, Tourism & Talent","3Es – Energy, Economy & Education"], answer:0},
+
+{q:"During Belgian Prime Minister Bart De Wever’s India visit, five key Memoranda of Understanding (MoUs) were signed covering areas such as renewable energy, security, diplomatic ties and cooperation. Which of the following was also listed as an important outcome of the visit?", options:["India-Belgium Defence Production Corridor","Investment Fast-Track Mechanism","India-Belgium Digital Currency Framework","Joint Indo-European Semiconductor Mission"], answer:1},
+
+{q:"Belgium Prime Minister Bart De Wever participated in the India-Belgium High-Level Dialogue on India-EU FTA in Mumbai on 4 September 2026. The discussions particularly focused on which combination of areas?", options:["Agriculture, fisheries, tourism and education","Defence manufacturing, space, nuclear energy and railways","Trade, ports, logistics and investment","Digital currency, banking, insurance and taxation"], answer:2},
+
+{q:"Vice President C.P. Radhakrishnan released a commemorative postage stamp marking 75 years of Dinamalar at Valluvar Kottam, Chennai. Dinamalar, which originated in Thiruvananthapuram, Kerala, was established in which year?", options:["1947","1951","1956","1962"], answer:1},
+
+{q:"Dinamalar completed 75 years in 2026, and Vice President C.P. Radhakrishnan released a commemorative postage stamp to mark the occasion. Who was the founder of the newspaper according to the given details?", options:["T.V. Ramasubbaiyer","K. Balasubramania Iyer","S. Sadanand","T.S. Chockalingam"], answer:0},
+
+{q:"Munitions India Limited (MIL), a Defence Public Sector Undertaking (DPSU) under the Ministry of Defence (MoD), signed an MoU with Drogo Aerospace to develop indigenous UAVs and loitering munitions. What key technology was specifically mentioned under the collaboration?", options:["Fixed-wing reconnaissance aircraft","Delta Wing Kamikaze UAV/Loitering Munition","Unmanned underwater combat vehicle","Long-range hypersonic cruise missile"], answer:1},
+
+{q:"Under the MoU between Munitions India Limited (MIL) and Drogo Aerospace, the proposed indigenous Delta Wing Kamikaze UAV/Loitering Munition is expected to have a range of around 1,000 km and carry a specified warhead capacity. What is that capacity?", options:["10–15 kg","15–20 kg","20–30 kg","30–40 kg"], answer:2},
+
+{q:"Munitions India Limited (MIL), formed in 2021 after the corporatisation of the Ordnance Factory Board, and Drogo Aerospace have divided responsibilities for developing indigenous UAV and loitering-munition systems. Which role is assigned to MIL?", options:["UAV platform design and navigation software only","Munitions, explosives, fuzing and warheads","Aircraft certification and pilot training","Satellite communication and remote sensing"], answer:1},
+
+{q:"Bodhan AI, the Artificial Intelligence-for-Education Centre of Excellence (AI-for-Education CoE) at IIT Madras, launched four foundational multilingual AI models as Digital Public Goods in partnership with AI4Bharat. Which of the following correctly represents all four models?", options:["Speech Recognition, Text-to-Speech, Machine Translation and Optical Character Recognition","Speech Synthesis, Image Generation, Machine Translation and Facial Recognition","Text Summarisation, Speech Recognition, Robotics and Optical Character Recognition","Machine Translation, Generative Video, Text-to-Speech and Image Classification"], answer:0},
+
+{q:"Bodhan AI of IIT Madras launched multilingual AI models to strengthen India’s Bharat Education AI (EduAI) Stack and sovereign education infrastructure. Among its four models, which one had the highest language support according to the given details?", options:["Optical Character Recognition (OCR) ","Text-to-Speech (TTS) ","Speech Recognition ","Machine Translation (MT) "], answer:2},
+
+{q:"The Bodhan AI initiative by IIT Madras includes a Student Tutor Bot and a Teacher Assistant Bot as practical educational tools. The Student Tutor Bot is specifically intended for students of which classes?", options:["Classes 1–5","Classes 6–12","Classes 8–10","Classes 11–graduation"], answer:1},
+
+{q:"The United Nations General Assembly (UNGA) adopted a resolution declaring 27 November as the International Day for the Elimination of Child, Early and Forced Marriage. Which resolution number corresponds to this newly declared observance?", options:["A/RES/75/170","A/RES/80/309","A/RES/70/1","A/RES/65/209"], answer:1},
+
+{q:"The International Day for the Elimination of Child, Early and Forced Marriage was adopted by the United Nations General Assembly (UNGA) without a vote during its 80th session. Which country led the initiative for the resolution?", options:["Sierra Leone","Bangladesh","India","South Africa"], answer:0},
+
+{q:"The Reserve Bank of India (RBI) released the Financial Stability Report (FSR), June 2026, under the Financial Stability and Development Council (FSDC) Sub-Committee to assess risks to India’s financial system. What GDP growth rate was recorded for FY2025–26 in the report?", options:["6.9%","7.1%","7.7%","8.2%"], answer:2},
+
+{q:"According to the RBI Financial Stability Report (FSR), June 2026, India’s inflation projection for FY2026–27 was revised upward from 4.6%. What was the revised projection mentioned in the report?", options:["4.8%","5.1%","5.4%","5.7%"], answer:1},
+
+{q:"The Reserve Bank of India (RBI) Financial Stability Report, June 2026, highlighted India’s external-sector resilience. As of 19 June 2026, what level of foreign exchange reserves was reported, along with an import cover of more than 10 months of merchandise imports?", options:["USD 612.6 billion","USD 642.6 billion","USD 672.6 billion","USD 702.6 billion"], answer:2},
+
+{q:"WhatsApp launched native bill-payment services in India through Bharat Connect, the network operated by NPCI Bharat BillPay Limited (NBBL). Bharat Connect was formerly known by which name?", options:["Unified Bill Payment Network (UBPN)","Bharat Bill Payment System (BBPS)","National Bill Settlement System (NBSS)","Digital Bharat Payment System (DBPS)"], answer:1},
+
+{q:"WhatsApp’s native bill-payment service through Bharat Connect provides access to a large network of billers across multiple categories. According to the given details, what was the coverage mentioned for the service?", options:["22,722 billers across 30 categories","20,000 billers across 25 categories","25,722 billers across 32 categories","22,272 billers across 28 categories"], answer:0},
+
+{q:"Bisleri International signed a Letter of Association (LoA) with State Bank of India (SBI) under the ‘Bottles for Change’ initiative. The partnership focuses on plastic segregation, collection, recycling and promotion of which broader environmental concept?", options:["Carbon trading","Circular economy","Green hydrogen economy","Blue economy"], answer:1},
+
+{q:"Joheirry Mola of the Dominican Republic was crowned Miss World 2026 at the 73rd Miss World event held in Nha Trang, Vietnam, with 111 contestants participating. Which country was announced as the host for the next Miss World edition in 2027?", options:["Philippines","Indonesia","Tanzania","Dominican Republic"], answer:2},
+
+{q:"President Droupadi Murmu appointed Dr Dinesh Sharma as the Lieutenant Governor of the Andaman & Nicobar Islands, succeeding Admiral (Retd.) Devendra Kumar Joshi, who had served in the post since 2017. Which Constitutional Article deals with the administration of Union Territories in this context?", options:["Article 239","Article 217","Article 280","Article 324"], answer:0},
+
+{q:"Dr Dinesh Sharma was appointed Lieutenant Governor of the Andaman & Nicobar Islands after Admiral (Retd.) Devendra Kumar Joshi. Considering the static details of the Union Territory, which of the following combinations is correct?", options:["Capital – Port Blair; Highest Peak – Saddle Peak; Location – Bay of Bengal","Capital – Port Blair; Highest Peak – Mount Harriet; Location – Arabian Sea","Capital – Sri Vijaya Puram; Highest Peak – Saddle Peak; Location – Bay of Bengal","Capital – Kavaratti; Highest Peak – Saddle Peak; Location – Bay of Bengal"], answer:0},
+
+{q:"Eight High Court judges were appointed as Chief Justices of different High Courts through the process involving the Supreme Court Collegium, the President and notification by the Ministry of Law & Justice. Under which Constitutional Article is the appointment of High Court judges provided?", options:["Article 214","Article 217","Article 224","Article 226"], answer:1},
+
+{q:"Among the appointments of eight High Court judges as Chief Justices, V. Kameswar Rao, Ravindra V. Ghuge and Sanjay Kumar Agrawal were assigned to different High Courts. Which of the following correctly matches these judges with their respective High Courts?", options:["V. Kameswar Rao – Patna HC; Ravindra V. Ghuge – Calcutta HC; Sanjay Kumar Agrawal – Rajasthan HC","V. Kameswar Rao – Rajasthan HC; Ravindra V. Ghuge – Patna HC; Sanjay Kumar Agrawal – Calcutta HC","V. Kameswar Rao – Calcutta HC; Ravindra V. Ghuge – Bombay HC; Sanjay Kumar Agrawal – Patna HC","V. Kameswar Rao – Patna HC; Ravindra V. Ghuge – Rajasthan HC; Sanjay Kumar Agrawal – Bombay HC"], answer:0},
+
+{q:"The list of eight newly appointed High Court Chief Justices included Mahesh Chandra Tripathi, Ashwani Kumar Mishra, Krushna Ram Mohapatra, Alpesh Yeshvant Kogje and Pushpendra Singh Bhati. Which of the following correctly identifies the High Court associated with Mahesh Chandra Tripathi?", options:["Bombay High Court","Punjab & Haryana High Court","Chhattisgarh High Court","Jammu & Kashmir and Ladakh High Court"], answer:0},
+
+{q:"Life Insurance Corporation of India (LIC) received approval from the Reserve Bank of India (RBI) to acquire up to 9.99% of the paid-up share capital or voting rights in ICICI Bank. What was LIC’s existing holding in ICICI Bank as of Q1 FY2026-27?", options:["3.95%","4.35%","5.25%","6.10%"], answer:1},
+
+{q:"The Reserve Bank of India (RBI) approved Life Insurance Corporation of India (LIC) to acquire up to 9.99% in ICICI Bank, with the acquisition to be completed within a specified period from the RBI approval letter dated 4 September 2026. What was the permitted deadline?", options:["Within 6 months","Within 9 months","Within 1 year","Within 2 years"], answer:2},
+
+{q:"According to the shareholding details provided along with the LIC–ICICI Bank development, Mutual Funds held 29.60% while Insurance Companies held 8.24% in ICICI Bank. Which statement correctly identifies ICICI Bank?", options:["Established in 1994 and headquartered in Mumbai; it is a private sector bank","Established in 1956 and headquartered in Mumbai; it is a public sector bank","Established in 1994 and headquartered in Bengaluru; it is a small finance bank","Established in 2000 and headquartered in Mumbai; it is a payments bank"], answer:0},
+
+{q:"German startup Isar Aerospace launched its Spectrum rocket from Andøya Spaceport in Norway under its ‘Onward and Upward’ second-flight mission. The rocket crossed 100 km altitude in less than four minutes, marking a significant milestone for Europe. What was the specific significance of this launch?", options:["First government-owned European rocket to reach geostationary orbit","First privately developed European rocket to reach space from Europe","First European reusable rocket to carry astronauts","First European rocket to launch from a non-European spaceport"], answer:1},
+
+{q:"The Spectrum rocket developed by Isar Aerospace has a height of 28 metres, diameter of 2 metres and is powered by 10 engines. What Low Earth Orbit (LEO) payload capacity was specified for the rocket?", options:["500 kg","750 kg","1,000 kg","1,500 kg"], answer:2},
+
+{q:"Ahuti Mk II, developed by Apollyon Dynamics, achieved a speed of 498 km/h and became India’s fastest multirotor Unmanned Aerial Vehicle (UAV). What was the approximate previous benchmark that it surpassed?", options:["225 km/h","275 km/h","325 km/h","425 km/h"], answer:2},
+
+{q:"The Ahuti Mk II multirotor UAV is designed primarily as an interceptor drone. Its operational purpose is to counter which combination of threats?", options:["Hostile drones and loitering munitions","Ballistic missiles and fighter aircraft","Submarines and unmanned underwater vehicles","Satellites and electronic-warfare aircraft"], answer:0},
+
+{q:"The Botanical Survey of India (BSI) discovered the new plant species Osbeckia ulotricha in the Agasthyamala Biosphere Reserve of the Western Ghats. The species was found mainly in Shola forests and montane grasslands at an altitude of 1,200–1,500 metres. To which plant family does it belong?", options:["Fabaceae","Melastomataceae","Asteraceae","Rubiaceae"], answer:1},
+
+{q:"Osbeckia ulotricha, the newly discovered plant species reported by the Botanical Survey of India (BSI), was found in the Agasthyamala Biosphere Reserve spread across Kerala and Tamil Nadu. In which botanical journal was the discovery published?", options:["Nature Plants","Lilloa","Indian Journal of Botany","Kew Bulletin"], answer:1},
+
+{q:"Andrea Kimi Antonelli of Mercedes won the 2026 Italian Grand Prix at the Monza Circuit on 6 September 2026. The victory was particularly significant because he became the first Italian to win his home Italian Grand Prix in 60 years, following which earlier Italian winner?", options:["Alberto Ascari in 1953","Nino Farina in 1950","Ludovico Scarfiotti in 1966","Giuseppe Farina in 1956"], answer:2},
+
+{q:"In the 2026 Italian Grand Prix at Monza, Andrea Kimi Antonelli started from 19th position because of grid penalties and eventually overtook George Russell with four laps remaining. By what margin did Antonelli win the race?", options:["2.4 seconds","3.1 seconds","3.8 seconds","4.6 seconds"], answer:2},
+
+{q:"S. R. Janakiraman (S.R.J.), a renowned Carnatic vocalist, musicologist and educator, passed away at the age of 98. Born in Lalgudi, Tamil Nadu, he was awarded the Padma Shri in 2011 for his contribution to which field?", options:["Art","Music Technology","Literature","Social Work"], answer:0},
+
+{q:"S. R. Janakiraman contributed to Carnatic music through lecture-demonstrations and was associated with Chennai’s December Music Festival. He had received several honours, including the Sangita Kala Acharya, Sangeet Natak Akademi Award, Sangeet Natak Akademi Fellowship and which Tamil Nadu honour?", options:["Kalaimamani","Thamizhaga Kala Ratna","Bharatidasan Award","M.S. Subbulakshmi Award"], answer:0},
+
+{q:"International Vulture Awareness Day (IVAD) is observed every year on the first Saturday of September to spread awareness about vulture conservation and their ecological importance. What was the date of International Vulture Awareness Day in 2026?", options:["3 September 2026","4 September 2026","5 September 2026","6 September 2026"], answer:2},
+
+{q:"International Vulture Awareness Day (IVAD) originated in 2006 through collaboration between the Endangered Wildlife Trust (EWT) of South Africa and the Hawk Conservancy Trust (HCT) of the UK. In India, the Ministry of Environment, Forest and Climate Change (MoEFCC) organised a national workshop on vulture conservation at which location in 2026?", options:["Panchkula, Haryana","Dehradun, Uttarakhand","Bhopal, Madhya Pradesh","Gandhinagar, Gujarat"], answer:0},
+
+];
+
+
+
+// ===============================
+// VARIABLES
+// ===============================
+
+let userAnswers = new Array(questions.length).fill(null);
+
+let markedForReview = new Array(questions.length).fill(false);
+
+let submitted = false;
+
+// ===============================
+// LOAD QUIZ
+// ===============================
+
+function loadQuiz(){
+
+    const quizDiv = document.getElementById("quiz");
+
+    questions.forEach((question,index)=>{
+
+        const qDiv = document.createElement("div");
+
+        qDiv.classList.add("question");
+
+        qDiv.id = `question_${index}`;
+
+        qDiv.innerHTML = `
+        <h3>Q${index+1}. ${question.q}</h3>
+        `;
+
+        question.options.forEach((option,optIndex)=>{
+
+            const opt = document.createElement("div");
+
+            opt.classList.add("option");
+
+            opt.innerText = option;
+
+            opt.onclick = ()=>selectOption(index,optIndex,opt);
+
+            opt.id = `q${index}_opt${optIndex}`;
+
+            qDiv.appendChild(opt);
+
+        });
+
+        // MARK BUTTON
+
+        const markBtn = document.createElement("button");
+
+        markBtn.innerText = "Mark For Review";
+
+        markBtn.classList.add("mark-btn");
+
+        markBtn.onclick = ()=>toggleMark(index,markBtn);
+
+        qDiv.appendChild(markBtn);
+
+        // CLEAR BUTTON
+
+        const clearBtn = document.createElement("button");
+
+        clearBtn.innerText = "Clear";
+
+        clearBtn.classList.add("clear-btn");
+
+        clearBtn.onclick = ()=>clearAnswer(index);
+
+        qDiv.appendChild(clearBtn);
+
+        quizDiv.appendChild(qDiv);
+
+    });
+
+}
+
+// ===============================
+// SELECT OPTION
+// ===============================
+
+function selectOption(qIndex,optIndex,element){
+
+    if(submitted) return;
+
+    userAnswers[qIndex] = optIndex;
+
+    const options = document.querySelectorAll(`[id^="q${qIndex}_opt"]`);
+
+    options.forEach(opt=>{
+        opt.classList.remove("selected");
+    });
+
+    element.classList.add("selected");
+
+}
+
+// ===============================
+// MARK FOR REVIEW
+// ===============================
+
+function toggleMark(index,button){
+
+    markedForReview[index] = !markedForReview[index];
+
+    const questionBox = document.getElementById(`question_${index}`);
+
+    if(markedForReview[index]){
+
+        button.classList.add("marked");
+
+        button.innerText = "Marked For Review";
+
+        questionBox.classList.add("review-marked");
+
+    }else{
+
+        button.classList.remove("marked");
+
+        button.innerText = "Mark For Review";
+
+        questionBox.classList.remove("review-marked");
+
+    }
+
+}
+
+// ===============================
+// CLEAR ANSWER
+// ===============================
+
+function clearAnswer(index){
+
+    if(submitted) return;
+
+    userAnswers[index] = null;
+
+    const options = document.querySelectorAll(`[id^="q${index}_opt"]`);
+
+    options.forEach(opt=>{
+        opt.classList.remove("selected");
+    });
+
+}
+
+// ===============================
+// SUBMIT QUIZ
+// ===============================
+
+function submitQuiz(){
+
+    if(submitted) return;
+
+    submitted = true;
+
+    clearInterval(timer);
+
+    let score = 0;
+
+    let correctCount = 0;
+    let wrongCount = 0;
+    let unansweredCount = 0;
+
+    questions.forEach((question,index)=>{
+
+        const userAns = userAnswers[index];
+
+        if(userAns === null){
+
+            unansweredCount++;
+
+        }
+        else if(userAns === question.answer){
+
+            score += 1;
+            correctCount++;
+
+        }
+        else{
+
+            score -= 0.25;
+            wrongCount++;
+
+        }
+
+    });
+
+    let attempted = correctCount + wrongCount;
+
+    let accuracy = attempted > 0
+    ? ((correctCount/attempted)*100).toFixed(2)
+    : 0;
+
+    document.body.innerHTML = `
+
+    <div class="container">
+
+        <div class="result-box">
+
+            <h1>Quiz Submitted ✅</h1>
+
+            <h2>Total Score: ${score.toFixed(2)}</h2>
+
+            <h3>Correct Answers: ${correctCount}</h3>
+
+            <h3>Wrong Answers: ${wrongCount}</h3>
+
+            <h3>Unanswered Questions: ${unansweredCount}</h3>
+
+            <h3>Accuracy: ${accuracy}%</h3>
+
+            <button class="review-btn" onclick="reviewAnswers()">
+            Review Answers
+            </button>
+
+            <div id="reviewSection"></div>
+
+        </div>
+
+    </div>
+
+    `;
+
+}
+
+// ===============================
+// REVIEW ANSWERS
+// ===============================
+
+function reviewAnswers(){
+
+    const reviewSection = document.getElementById("reviewSection");
+
+    let html = `<h1 style="margin-top:40px;">Review Section</h1>`;
+
+    questions.forEach((question,index)=>{
+
+        const userAns = userAnswers[index];
+
+        let status = "";
+        let marks = "";
+
+        if(userAns === null){
+
+            status = `<span class="unanswered">Unanswered</span>`;
+            marks = `0 Marks`;
+
+        }
+        else if(userAns === question.answer){
+
+            status = `<span class="correct">Correct ✅</span>`;
+            marks = `+1 Mark`;
+
+        }
+        else{
+
+            status = `<span class="wrong">Wrong ❌</span>`;
+            marks = `-0.25 Mark`;
+
+        }
+
+        html += `
+
+        <div class="review-question">
+
+            <h3>Q${index+1}. ${question.q}</h3>
+
+            <p>${status}</p>
+
+            <p><b>Marks:</b> ${marks}</p>
+
+            <p>
+            <b>Your Answer:</b>
+            ${
+                userAns === null
+                ? "Not Attempted"
+                : question.options[userAns]
+            }
+            </p>
+
+            <div class="correct-answer">
+            <b>Correct Answer:</b>
+            ${question.options[question.answer]}
+            </div>
+
+        </div>
+
+        `;
+
+    });
+
+    reviewSection.innerHTML = html;
+
+}
+
+// ===============================
+// TIMER
+// ===============================
+
+let time = 1800;
+
+let timer;
+
+let isPaused = false;
+
+function startTimer(){
+
+    timer = setInterval(()=>{
+
+        if(!isPaused){
+
+            let minutes = Math.floor(time/60);
+
+            let seconds = time%60;
+
+            document.getElementById("timer").innerText =
+            `Time Left: ${minutes}:${seconds < 10 ? '0'+seconds : seconds}`;
+
+            time--;
+
+            if(time < 0){
+
+                clearInterval(timer);
+
+                alert("Time is up! Quiz auto-submitted.");
+
+                submitQuiz();
+
+            }
+
+        }
+
+    },1000);
+
+}
+
+// ===============================
+// PAUSE TIMER
+// ===============================
+
+function pauseTimer(){
+
+    if(submitted) return;
+
+    isPaused = true;
+
+    document.getElementById("pauseBtn").disabled = true;
+
+    document.getElementById("resumeBtn").disabled = false;
+
+    // Disable options
+    document.querySelectorAll(".option").forEach(opt=>{
+        opt.classList.add("disabled-option");
+    });
+
+    // Disable buttons
+    document.querySelectorAll(".mark-btn, .clear-btn").forEach(btn=>{
+        btn.disabled = true;
+        btn.classList.add("disabled-btn");
+    });
+
+}
+// ===============================
+// RESUME TIMER
+// ===============================
+
+function resumeTimer(){
+
+    if(submitted) return;
+
+    isPaused = false;
+
+    document.getElementById("pauseBtn").disabled = false;
+
+    document.getElementById("resumeBtn").disabled = true;
+
+    // Enable options
+    document.querySelectorAll(".option").forEach(opt=>{
+        opt.classList.remove("disabled-option");
+    });
+
+    // Enable buttons
+    document.querySelectorAll(".mark-btn, .clear-btn").forEach(btn=>{
+        btn.disabled = false;
+        btn.classList.remove("disabled-btn");
+    });
+
+}
+// ===============================
+
+loadQuiz();
+
+startTimer();
+
+</script>
+
+</body>
+</html>
